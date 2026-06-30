@@ -29,8 +29,13 @@ HEADERS = {
         "Chrome/120.0.0.0 Safari/537.36"
     ),
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "ru-RU,ru;q=0.9",
+    "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
 }
+
+EIS_HOME_URL = "https://zakupki.gov.ru/epz/main/public/home.html"
 
 STOP_WORDS = [
     "услуги", "работы", "питание", "медицин", "фармацев",
@@ -60,6 +65,16 @@ def _parse_price(text: str) -> float:
         return float(cleaned)
     except ValueError:
         return 0.0
+
+
+async def _init_session(session: aiohttp.ClientSession):
+    """Заходим на главную страницу ЕИС чтобы получить куки сессии."""
+    async with session.get(
+        EIS_HOME_URL,
+        headers=HEADERS,
+        timeout=aiohttp.ClientTimeout(total=30),
+    ) as resp:
+        pass
 
 
 async def _fetch_page(session: aiohttp.ClientSession, page: int) -> str:
@@ -146,7 +161,9 @@ async def parse_eis(pages: int = 3) -> list[Tender]:
     print(f"⏳ 1/3: Подключаюсь к ЕИС zakupki.gov.ru…", flush=True)
 
     all_tenders: list[Tender] = []
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
+        await _init_session(session)
+        print(f"⏳ 2/3: Загружаю страницы поиска…", flush=True)
         for page in tqdm(range(1, pages + 1), desc="Страницы ЕИС", unit="стр"):
             html = await _fetch_page(session, page)
             page_tenders = _parse_cards(html)
