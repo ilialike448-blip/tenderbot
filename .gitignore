@@ -1,0 +1,10 @@
+.env
+*.db
+*.log
+__pycache__/
+chromedriver*
+*.pyc
+.venv/
+venv/
+*.sqlite
+*.sqlite3

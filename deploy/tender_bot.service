@@ -1,0 +1,17 @@
+[Unit]
+Description=TenderBot — мониторинг тендеров ЕИС
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/tenderbot
+ExecStart=/opt/tenderbot/venv/bin/python run.py
+Restart=always
+RestartSec=10
+EnvironmentFile=/opt/tenderbot/.env
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
