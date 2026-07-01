@@ -1,0 +1,17 @@
+[Unit]
+Description=TenderPortal (FastAPI + aiogram Mini App)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/tenderbot
+Environment=PATH=/opt/tenderbot/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+ExecStart=/opt/tenderbot/venv/bin/python portal/run.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

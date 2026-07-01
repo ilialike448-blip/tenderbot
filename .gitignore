@@ -8,3 +8,10 @@ chromedriver*
 venv/
 *.sqlite
 *.sqlite3
+
+# Mini App build output
+miniapp/dist/
+miniapp/node_modules/
+
+# Design mockups (large HTML files, kept locally)
+miniapp/design/

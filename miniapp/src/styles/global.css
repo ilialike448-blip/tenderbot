@@ -1,0 +1,305 @@
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d1117;
+  --panel:     #161b22;
+  --border:    #21262d;
+  --border2:   #30363d;
+  --blue:      #388bfd;
+  --green:     #3fb950;
+  --orange:    #f0883e;
+  --purple:    #a78bfa;
+  --red:       #f85149;
+  --text:      #e6edf3;
+  --text2:     #7d8590;
+  --text3:     #484f58;
+
+  --bg-blue:   #1a2a4a;
+  --bg-green:  #0d2010;
+  --bg-orange: #3a2a1a;
+  --bg-purple: #2d1f5f;
+
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+/* ── Layout Shell ─────────────────────────────────────────── */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+.screen-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px;
+  background: var(--bg);
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.header {
+  background: var(--panel);
+  padding: 12px 14px 10px;
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+.header-top { display: flex; align-items: center; gap: 10px; }
+.header-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, #1f6feb, #388bfd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.header-info { flex: 1; min-width: 0; }
+.header-name { color: var(--text); font-size: 14px; font-weight: 600; }
+.header-role { color: var(--text2); font-size: 11px; margin-top: 1px; }
+.notif-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--border); display: flex; align-items: center;
+  justify-content: center; position: relative; cursor: pointer;
+  border: none; flex-shrink: 0;
+}
+.notif-dot {
+  width: 8px; height: 8px; background: var(--red); border-radius: 50%;
+  position: absolute; top: 4px; right: 4px; border: 1.5px solid var(--panel);
+}
+
+/* ── Top Tabs ─────────────────────────────────────────────── */
+.top-tabs {
+  display: flex; background: var(--bg);
+  border-bottom: 0.5px solid var(--border);
+  padding: 0 12px; flex-shrink: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.top-tabs::-webkit-scrollbar { display: none; }
+.top-tab {
+  padding: 10px 16px; font-size: 12px; color: var(--text2);
+  border-bottom: 2px solid transparent; white-space: nowrap;
+  cursor: pointer; transition: color 0.15s; flex-shrink: 0;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.top-tab.active-blue  { color: var(--blue);  border-bottom-color: var(--blue); }
+.top-tab.active-green { color: var(--green); border-bottom-color: var(--green); }
+
+/* ── Bottom Nav ───────────────────────────────────────────── */
+.bottom-nav {
+  background: var(--panel); border-top: 0.5px solid var(--border);
+  display: flex; padding: 8px 0;
+  padding-bottom: max(8px, var(--safe-bottom));
+  flex-shrink: 0;
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 2px; cursor: pointer;
+  background: none; border: none; color: inherit;
+  min-height: 44px; justify-content: center;
+}
+.nav-item svg { width: 20px; height: 20px; stroke: var(--text2); fill: none;
+  stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.nav-item.active svg { stroke: var(--blue); }
+.nav-label { font-size: 9px; color: var(--text2); }
+.nav-item.active .nav-label { color: var(--blue); }
+
+/* ── Summary Row ──────────────────────────────────────────── */
+.summary-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px;
+}
+.sum-box {
+  background: var(--panel); border-radius: 10px;
+  padding: 10px 8px; text-align: center; border: 0.5px solid var(--border);
+}
+.sum-num { font-size: 20px; font-weight: 700; }
+.sum-label { color: var(--text2); font-size: 10px; margin-top: 2px; }
+.sum-green .sum-num { color: var(--green); }
+.sum-blue  .sum-num { color: var(--blue); }
+.sum-orange .sum-num { color: var(--orange); }
+.sum-fire .sum-num { color: var(--orange); }
+.sum-ok .sum-num { color: var(--green); }
+.sum-risk .sum-num { color: var(--text2); }
+
+/* ── Section Header ───────────────────────────────────────── */
+.section-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.section-title { color: var(--text2); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.8px; text-transform: uppercase; }
+.section-action { color: var(--blue); font-size: 10px; cursor: pointer;
+  background: none; border: none; }
+
+/* ── Filter Chips ─────────────────────────────────────────── */
+.filter-row {
+  display: flex; gap: 6px; margin-bottom: 10px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-chip {
+  padding: 4px 12px; border-radius: 14px; font-size: 11px; white-space: nowrap;
+  border: 0.5px solid var(--border); color: var(--text2); background: var(--panel);
+  cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+}
+.filter-chip.active-blue   { background: var(--bg-blue);  color: var(--blue);  border-color: var(--blue); }
+.filter-chip.active-green  { background: var(--bg-green); color: var(--green); border-color: var(--green); }
+
+/* ── Cards ────────────────────────────────────────────────── */
+.card {
+  background: var(--panel); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 10px 12px; margin-bottom: 8px;
+}
+.card-taken { border-color: #1a3a5f; background: #0d1a2a; }
+
+/* ── Status Badge ─────────────────────────────────────────── */
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 600;
+}
+.badge-wip     { background: var(--bg-blue);   color: var(--blue); }
+.badge-new     { background: var(--bg-orange);  color: var(--orange); }
+.badge-review  { background: var(--bg-purple);  color: var(--purple); }
+.badge-done    { background: #1a3a1a; color: var(--green); }
+
+/* ── Priority Dot ─────────────────────────────────────────── */
+.priority-high   { color: var(--red); }
+.priority-med    { color: var(--orange); }
+.priority-low    { color: var(--text3); }
+
+/* ── Avatar ───────────────────────────────────────────────── */
+.av {
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-weight: 700; flex-shrink: 0;
+}
+.av-sm  { width: 28px; height: 28px; font-size: 10px; }
+.av-md  { width: 36px; height: 36px; font-size: 12px; }
+.av-lg  { width: 40px; height: 40px; font-size: 14px; }
+
+/* ── Progress Bar ─────────────────────────────────────────── */
+.progress-bar-wrap { background: var(--border); border-radius: 4px; height: 4px; }
+.progress-bar-fill { background: var(--blue); border-radius: 4px; height: 4px; transition: width 0.3s; }
+.progress-bar-fill.done { background: var(--green); }
+
+/* ── Status Dot ───────────────────────────────────────────── */
+.sdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sdot-green  { background: var(--green); }
+.sdot-orange { background: var(--orange); }
+.sdot-gray   { background: var(--text3); }
+
+/* ── Pills ────────────────────────────────────────────────── */
+.pill { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+.pill-g { background: #1a3a1a; color: var(--green); }
+.pill-b { background: var(--bg-blue); color: var(--blue); }
+.pill-o { background: var(--bg-orange); color: var(--orange); }
+
+/* ── Margin Badge ─────────────────────────────────────────── */
+.margin-badge { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.margin-high { background: #1a3a10; color: var(--green); }
+.margin-mid  { background: #1a2a10; color: #8fbc3f; }
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 13px;
+  font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s;
+  min-height: 40px;
+}
+.btn:active { opacity: 0.7; }
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-green   { background: var(--bg-green); color: var(--green); border: 0.5px solid var(--green); }
+.btn-ghost   { background: var(--border); color: var(--text2); }
+.btn-danger  { background: #2d1318; color: var(--red); border: 0.5px solid var(--red); }
+.btn-full    { width: 100%; }
+
+/* ── Loading / Empty / Error States ──────────────────────── */
+.state-center {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 48px 24px; gap: 12px; text-align: center;
+}
+.state-icon  { font-size: 40px; }
+.state-title { color: var(--text);  font-size: 16px; font-weight: 600; }
+.state-text  { color: var(--text2); font-size: 13px; line-height: 1.5; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--panel) 25%, var(--border) 50%, var(--panel) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── AI Pulse ─────────────────────────────────────────────── */
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.ai-dot { animation: pulse 2s infinite; }
+
+/* ── Two-col grid ─────────────────────────────────────────── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* ── Misc ─────────────────────────────────────────────────── */
+.text-green  { color: var(--green); }
+.text-blue   { color: var(--blue); }
+.text-orange { color: var(--orange); }
+.text-gray   { color: var(--text2); }
+.text-dim    { color: var(--text3); }
+.fw-600 { font-weight: 600; }
+.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.divider { height: 0.5px; background: var(--border); margin: 8px 0; }
+
+/* ── Tender card grid ─────────────────────────────────────── */
+.tender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+.tg-item { background: var(--bg); border-radius: 6px; padding: 6px 8px; }
+.tg-label { color: var(--text3); font-size: 10px; margin-bottom: 2px; }
+.tg-value { color: var(--text); font-size: 11px; font-weight: 600; }
+
+/* ── Form ─────────────────────────────────────────────────── */
+.form-group { margin-bottom: 14px; }
+.form-label { color: var(--text2); font-size: 12px; margin-bottom: 4px; display: block; }
+.form-input {
+  width: 100%; background: var(--panel); border: 0.5px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 14px;
+  outline: none; transition: border-color 0.15s;
+}
+.form-input:focus { border-color: var(--blue); }
+
+/* ── Top-3 card ───────────────────────────────────────────── */
+.top3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+.top-card {
+  background: var(--panel); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 10px 6px; text-align: center;
+}
+.top-card.gold { border-color: var(--orange); background: #1a1a0d; }
+
+/* ── Stat card ────────────────────────────────────────────── */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+.stat-card {
+  background: var(--panel); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 10px 12px;
+}
+.stat-lbl { color: var(--text2); font-size: 10px; margin-bottom: 4px; }
+.stat-val { font-size: 18px; font-weight: 700; }
+.stat-sub { color: var(--text3); font-size: 10px; margin-top: 3px; }
+
+/* ── Overlay / Modal ──────────────────────────────────────── */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 100; display: flex; align-items: flex-end;
+  padding-bottom: var(--safe-bottom);
+}
+.modal {
+  background: var(--panel); border-radius: 16px 16px 0 0;
+  width: 100%; padding: 20px; max-height: 85vh; overflow-y: auto;
+}
+.modal-handle {
+  width: 36px; height: 4px; background: var(--border2);
+  border-radius: 2px; margin: 0 auto 16px;
+}
