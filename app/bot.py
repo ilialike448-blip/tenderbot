@@ -1,7 +1,7 @@
 import io
 import os
 from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 _ALLOWED_IDS = os.getenv("ALLOWED_CHAT_IDS", "")
@@ -11,13 +11,17 @@ RATING_EMOJI = {"fire": "🔥", "ok": "✅", "warn": "⚠️", "bad": "❌"}
 
 
 def _allowed(update: Update) -> bool:
+    chat_id = update.effective_chat.id
+    print(f"[DEBUG] Сообщение от chat_id: {chat_id} | Разрешённые: {ALLOWED_CHAT_IDS}", flush=True)
     if not ALLOWED_CHAT_IDS:
         return True
-    return update.effective_chat.id in ALLOWED_CHAT_IDS
+    return chat_id in ALLOWED_CHAT_IDS
 
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print(f"[DEBUG] /start получен от {update.effective_chat.id}", flush=True)
     if not _allowed(update):
+        print(f"[DEBUG] Заблокирован фильтром ALLOWED_CHAT_IDS", flush=True)
         return
     await update.message.reply_text(
         "👋 TenderBot запущен!\n\n"
@@ -184,7 +188,11 @@ def run_bot():
 
     init_db()
 
+    async def debug_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        print(f"[DEBUG] Любое сообщение от chat_id: {update.effective_chat.id} | текст: {update.message.text if update.message else '?'}", flush=True)
+
     app = Application.builder().token(BOT_TOKEN).build()
+    app.add_handler(MessageHandler(filters.ALL, debug_all), group=-1)
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(CommandHandler("tenders", cmd_tenders))
