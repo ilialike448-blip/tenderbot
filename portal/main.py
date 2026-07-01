@@ -19,12 +19,22 @@ async def lifespan(app: FastAPI):
 
     if cfg.BOT_TOKEN and cfg.BASE_URL and cfg.WEBHOOK_SECRET:
         webhook_url = f"{cfg.BASE_URL}/tg/webhook"
-        await bot.set_webhook(
-            url=webhook_url,
-            secret_token=cfg.WEBHOOK_SECRET,
-            drop_pending_updates=True,
-        )
-        print(f"✅ Webhook set: {webhook_url}", flush=True)
+        for attempt in range(3):
+            try:
+                await bot.set_webhook(
+                    url=webhook_url,
+                    secret_token=cfg.WEBHOOK_SECRET,
+                    drop_pending_updates=True,
+                )
+                print(f"✅ Webhook set: {webhook_url}", flush=True)
+                break
+            except Exception as e:
+                print(f"⚠️  Webhook attempt {attempt+1}/3 failed: {e}", flush=True)
+                if attempt < 2:
+                    import asyncio
+                    await asyncio.sleep(3)
+        else:
+            print("⚠️  Webhook not set after 3 attempts — bot commands unavailable", flush=True)
     else:
         print("⚠️  Webhook not set — PORTAL_BOT_TOKEN / PORTAL_BASE_URL / PORTAL_WEBHOOK_SECRET missing", flush=True)
 
