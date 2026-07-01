@@ -36,9 +36,9 @@ async def get_dashboard(
                   AND t.closed_at >= datetime('now', ?)) as done,
                (SELECT COUNT(*) FROM tasks t WHERE t.assignee_id=u.telegram_id AND t.status='in_work') as in_work,
                (SELECT COUNT(*) FROM tasks t WHERE t.assignee_id=u.telegram_id AND t.status='new') as new_count,
-               (SELECT external_number FROM tenders WHERE assigned_to=u.telegram_id
+               (SELECT number FROM tenders WHERE assigned_to=u.telegram_id
                   AND portal_status='in_work' LIMIT 1) as active_tender_num,
-               (SELECT name FROM tenders WHERE assigned_to=u.telegram_id
+               (SELECT title FROM tenders WHERE assigned_to=u.telegram_id
                   AND portal_status='in_work' LIMIT 1) as active_tender_name
         FROM users u
         WHERE u.status='approved'
@@ -69,7 +69,7 @@ async def get_dashboard(
 
     # Tenders in work
     async with db.execute("""
-        SELECT external_number, name, assigned_to, taken_at, nmc, end_date,
+        SELECT number AS external_number, title AS name, assigned_to, taken_at, nmc, end_date,
                taken_by_name
         FROM tenders
         WHERE portal_status = 'in_work'

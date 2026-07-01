@@ -37,7 +37,7 @@ async def get_analytics(
 
     # Per-tender breakdown
     async with db.execute("""
-        SELECT t.external_number, t.name, t.nmc, t.cost_estimate, t.margin_percent,
+        SELECT t.number AS external_number, t.title AS name, t.nmc, t.cost_estimate, t.margin_percent,
                t.rating, t.analyzed_at, t.taken_at, t.delivery_deadline,
                u.first_name, u.last_name
         FROM tenders t

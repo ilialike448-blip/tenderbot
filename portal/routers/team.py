@@ -29,9 +29,9 @@ async def get_team(
                   AND t.status='new') as new_count,
                (SELECT COUNT(*) FROM tenders ten WHERE ten.assigned_to=u.telegram_id
                   AND ten.taken_at >= datetime('now', '-{days} days')) as tenders_count,
-               (SELECT external_number FROM tenders WHERE assigned_to=u.telegram_id
+               (SELECT number FROM tenders WHERE assigned_to=u.telegram_id
                   AND portal_status='in_work' LIMIT 1) as active_tender_num,
-               (SELECT name FROM tenders WHERE assigned_to=u.telegram_id
+               (SELECT title FROM tenders WHERE assigned_to=u.telegram_id
                   AND portal_status='in_work' LIMIT 1) as active_tender_name
         FROM users u
         WHERE u.status='approved'
@@ -72,9 +72,9 @@ async def get_employee(
     emp["initials"] = _initials(emp.get("first_name"), emp.get("last_name"))
 
     async with db.execute("""
-        SELECT t.*, ten.name AS tender_name
+        SELECT t.*, ten.title AS tender_name
         FROM tasks t
-        LEFT JOIN tenders ten ON t.tender_number = ten.external_number
+        LEFT JOIN tenders ten ON t.tender_number = ten.number
         WHERE t.assignee_id = ?
         ORDER BY t.created_at DESC
         LIMIT 20

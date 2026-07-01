@@ -49,10 +49,10 @@ async def list_tasks(
                u.first_name  AS assignee_first,
                u.last_name   AS assignee_last,
                u.color       AS assignee_color,
-               ten.name      AS tender_name
+               ten.title     AS tender_name
         FROM tasks t
         LEFT JOIN users u  ON t.assignee_id = u.telegram_id
-        LEFT JOIN tenders ten ON t.tender_number = ten.external_number
+        LEFT JOIN tenders ten ON t.tender_number = ten.number
         WHERE 1=1 {where_status} {where_role}
         ORDER BY
             CASE t.status WHEN 'in_work' THEN 1 WHEN 'review' THEN 2

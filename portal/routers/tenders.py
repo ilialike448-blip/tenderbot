@@ -17,6 +17,8 @@ REFRESH_COOLDOWN = 60  # seconds
 
 def _fmt_tender(r) -> dict:
     d = dict(r)
+    d["external_number"] = d.get("number")
+    d["name"] = d.get("title")
     try:
         d["cert_requirements"] = json.loads(d.get("cert_requirements") or "[]")
     except Exception:
@@ -67,7 +69,7 @@ async def get_tender(
                u.color AS assignee_color
         FROM tenders t
         LEFT JOIN users u ON t.assigned_to = u.telegram_id
-        WHERE t.external_number = ?
+        WHERE t.number = ?
     """, (number,)) as cur:
         row = await cur.fetchone()
 
@@ -102,7 +104,7 @@ async def take_tender(
     db: aiosqlite.Connection = Depends(get_db),
 ) -> dict:
     async with db.execute(
-        "SELECT * FROM tenders WHERE external_number = ?", (number,)
+        "SELECT * FROM tenders WHERE number = ?", (number,)
     ) as cur:
         row = await cur.fetchone()
 
@@ -131,11 +133,11 @@ async def take_tender(
     await db.execute("""
         UPDATE tenders
         SET portal_status='in_work', assigned_to=?, taken_at=?, taken_by_name=?
-        WHERE external_number=?
+        WHERE number=?
     """, (assignee_id, now, assignee_name, number))
 
     # Auto-create a draft task
-    task_title = f"Тендер: {t['name'][:60]}"
+    task_title = f"Тендер: {t['title'][:60]}"
     await db.execute("""
         INSERT INTO tasks (title, status, priority, assignee_id, tender_number, created_at)
         VALUES (?, 'new', 'high', ?, ?, ?)
@@ -144,7 +146,7 @@ async def take_tender(
     await db.commit()
 
     async with db.execute(
-        "SELECT * FROM tenders WHERE external_number = ?", (number,)
+        "SELECT * FROM tenders WHERE number = ?", (number,)
     ) as cur:
         updated = await cur.fetchone()
 
