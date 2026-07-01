@@ -1,4 +1,3 @@
-import { retrieveLaunchParams, miniApp, viewport } from '@telegram-apps/sdk-react';
 import { useEffect, useState } from 'react';
 import { api, setInitData } from './api/client';
 import { User } from './api/types';
@@ -26,14 +25,13 @@ export default function App() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    // Expand to full screen
-    try {
-      const lp = retrieveLaunchParams();
-      setInitData(lp.initDataRaw ?? '');
-      miniApp.ready();
-      viewport.expand();
-    } catch {
-      // Outside Telegram (dev mode) — use empty initData
+    const twa = window.Telegram?.WebApp;
+    if (twa) {
+      twa.ready();
+      twa.expand();
+      setInitData(twa.initData ?? '');
+    } else {
+      // Dev mode outside Telegram
       setInitData('');
     }
     loadUser();
@@ -91,7 +89,6 @@ export default function App() {
     );
   }
 
-  // Pending / Rejected / Blocked gate
   if (user.status !== 'approved') {
     return (
       <div className="app">
@@ -100,12 +97,13 @@ export default function App() {
     );
   }
 
-  // Admin panel overlay
   if (showAdmin) {
     return (
       <div className="app">
         <Header user={user} unreadCount={unreadCount} onNotifClick={() => {}} />
-        <AdminPanel onBack={() => setShowAdmin(false)} />
+        <div className="screen-content">
+          <AdminPanel onBack={() => setShowAdmin(false)} />
+        </div>
       </div>
     );
   }
@@ -113,8 +111,6 @@ export default function App() {
   const renderContent = () => {
     if (bottomTab === 'team') return <Team user={user} />;
     if (bottomTab === 'analytics') return <Analytics />;
-
-    // bottomTab === 'home'
     if (topTab === 'tasks') return <Tasks user={user} />;
     if (topTab === 'ai') return <AIAuto user={user} />;
     return <Dashboard user={user} />;
@@ -130,10 +126,7 @@ export default function App() {
       />
 
       {bottomTab === 'home' && (
-        <TopTabs
-          active={topTab}
-          onChange={setTopTab}
-        />
+        <TopTabs active={topTab} onChange={setTopTab} />
       )}
 
       <div className="screen-content">

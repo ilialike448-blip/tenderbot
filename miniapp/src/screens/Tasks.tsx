@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client';
 import { Task, User } from '../api/types';
+// User is used in Props interfaces below
 
 type Filter = 'all' | 'new' | 'in_work' | 'review' | 'done';
 
@@ -66,7 +67,6 @@ export default function Tasks({ user }: Props) {
   if (showCreate) {
     return (
       <CreateTaskForm
-        user={user}
         onBack={() => { setShowCreate(false); load(filter); }}
       />
     );
@@ -268,7 +268,7 @@ function TaskDetail({ task: t, user, onBack }: { task: Task; user: User; onBack:
   );
 }
 
-function CreateTaskForm({ user, onBack }: { user: User; onBack: () => void }) {
+function CreateTaskForm({ onBack }: { onBack: () => void }) {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('med');
   const [dueDate, setDueDate] = useState('');

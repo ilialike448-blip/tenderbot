@@ -58,7 +58,6 @@ export default function AIAuto({ user }: Props) {
     return (
       <TenderDetail
         tender={selected}
-        user={user}
         onBack={() => { setSelected(null); load(); }}
         onTake={handleTake}
         taking={taking === selected.external_number}
@@ -236,8 +235,8 @@ function TenderCard({ tender: t, onDetails, onTake, taking }: {
   );
 }
 
-function TenderDetail({ tender: t, user, onBack, onTake, taking }: {
-  tender: Tender; user: User; onBack: () => void;
+function TenderDetail({ tender: t, onBack, onTake, taking }: {
+  tender: Tender; onBack: () => void;
   onTake: (n: string) => void; taking: boolean;
 }) {
   const taken = t.portal_status === 'in_work';
